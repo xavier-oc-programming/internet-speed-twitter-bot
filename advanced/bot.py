@@ -204,12 +204,13 @@ class InternetSpeedTwitterBot:
         """
         print("Navigating to Twitter/X login...")
         self.driver.get(config.TWITTER_LOGIN_URL)
-        time.sleep(2)
+        time.sleep(3)  # wait for login modal animation to complete
 
         # Click "Sign in with Google"
         google_btn = self.wait.until(
             EC.element_to_be_clickable((By.XPATH, config.TWITTER_XPATH_GOOGLE_BTN))
         )
+        print("Found 'Sign in with Google' button — clicking...")
         original_window = self.driver.current_window_handle
         self._js_click(google_btn)
         time.sleep(1.5)

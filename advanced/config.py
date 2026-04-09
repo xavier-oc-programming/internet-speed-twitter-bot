@@ -54,8 +54,12 @@ TWITTER_XPATH_PASSWORD_INPUT = "//input[@name='password']"
 TWITTER_XPATH_LOGIN_BTN = "//div[@data-testid='LoginForm_Login_Button']"
 
 # ── XPaths — Google OAuth (Sign in with Google) ───────────────────────────────
-# "Sign in with Google" button on the X login page
-TWITTER_XPATH_GOOGLE_BTN = "//span[contains(normalize-space(),'Sign in with Google') or contains(normalize-space(),'Continue with Google')]"
+# "Sign in with Google" button on the X login page — target the clickable parent, not the inner span
+TWITTER_XPATH_GOOGLE_BTN = (
+    "//button[contains(.,'Sign in with Google')] | "
+    "//a[contains(.,'Sign in with Google')] | "
+    "//div[@role='button' and contains(.,'Sign in with Google')]"
+)
 # Google account picker — the list item for a specific account
 GOOGLE_XPATH_ACCOUNT = "//div[@data-identifier='{email}'] | //li[.//*[contains(text(),'{email}')]]"
 # Google "Continue" / "Allow" confirmation button (if shown after account selection)
