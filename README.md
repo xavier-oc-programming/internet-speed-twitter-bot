@@ -56,9 +56,32 @@ pip install -r requirements.txt
 python menu.py
 ```
 
-On first run, Chrome opens — log in to Twitter/X manually (use "Sign in with Google" or any method). The session is saved to `advanced/chrome_profile/`. Every run after that is fully automatic — no login needed.
+Select **option 2** (Advanced build). A new Chrome window opens — this is **not your regular Chrome**, it is a separate browser controlled by Selenium with its own profile stored in `advanced/chrome_profile/`.
 
-Update `CHROME_VERSION` in `advanced/config.py` to match your installed Chrome major version if UC raises a version mismatch error.
+### First run — log in manually
+
+The bot navigates to `x.com` and prompts you to log in. **Log in inside this Selenium Chrome window** (not your normal browser). Use "Sign in with Google" or username/password — whichever you normally use.
+
+Once you are on the Twitter/X home timeline, go back to the terminal and press **Enter** to continue.
+
+Chrome saves your session to `advanced/chrome_profile/`. Every run after this is fully automatic — the bot detects your saved session and skips the login step entirely.
+
+> **Important:** Do not log in on your normal Chrome. The bot can only reuse sessions that are saved inside `advanced/chrome_profile/`. Your regular browser profile is separate and unaffected.
+
+### Subsequent runs
+
+No action needed. Run `python menu.py`, select option 2, and the bot runs end-to-end on its own.
+
+---
+
+### Troubleshooting
+
+| Problem | Fix |
+|---|---|
+| UC raises a Chrome version mismatch | Update `CHROME_VERSION` in `advanced/config.py` to match your Chrome major version (`Google Chrome --version`) |
+| Bot can't find the consent checkbox | The M-Lab page changed — inspect DevTools for the new ID and update `MLAB_CONSENT_ID` in `config.py` |
+| Tweet box not found | Twitter changed its DOM — inspect DevTools and update `TWITTER_XPATH_TWEET_BOX` in `config.py` |
+| Session expired, bot asks to log in again | Log in manually in the Selenium window once more; the session will be re-saved |
 
 ---
 
