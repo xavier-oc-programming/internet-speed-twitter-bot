@@ -44,18 +44,21 @@ def main():
 
         # ── Step 3: check Twitter login ────────────────────────────────────────
         if not bot.is_logged_in_to_twitter():
+            google_email = os.getenv("GOOGLE_EMAIL", "")
             twitter_user = os.getenv("TWITTER_USERNAME", "")
             twitter_pass = os.getenv("TWITTER_PASSWORD", "")
 
-            if twitter_user and twitter_pass:
-                print("\nNot logged in — attempting automated login...")
-                try:
+            print("\nNot logged in — attempting automated login...")
+            try:
+                if google_email:
+                    bot.login_with_google(google_email)
+                elif twitter_user and twitter_pass:
                     bot.login(twitter_user, twitter_pass)
-                except Exception as exc:
-                    print(f"Automated login failed: {exc}")
+            except Exception as exc:
+                print(f"Automated login failed: {exc}")
 
             if not bot.is_logged_in_to_twitter():
-                print("\nNot logged in to Twitter/X (automated login failed or no credentials).")
+                print("\nAutomated login failed or no credentials set in .env.")
                 print("Log in manually in the Chrome window, then press Enter here.")
                 input("Press Enter when logged in: ")
                 if not bot.is_logged_in_to_twitter():

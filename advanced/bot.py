@@ -196,6 +196,68 @@ class InternetSpeedTwitterBot:
         time.sleep(3)
         print("Login submitted.")
 
+    def login_with_google(self, google_email: str) -> None:
+        """
+        Sign in to Twitter/X via Google OAuth.
+        Handles both popup and same-tab redirect flows.
+        Session saved in persistent profile — only runs when not already logged in.
+        """
+        print("Navigating to Twitter/X login...")
+        self.driver.get(config.TWITTER_LOGIN_URL)
+        time.sleep(2)
+
+        # Click "Sign in with Google"
+        google_btn = self.wait.until(
+            EC.element_to_be_clickable((By.XPATH, config.TWITTER_XPATH_GOOGLE_BTN))
+        )
+        original_window = self.driver.current_window_handle
+        self._js_click(google_btn)
+        time.sleep(1.5)
+
+        # Google OAuth may open in a new popup window or redirect in the same tab
+        short_wait = WebDriverWait(self.driver, 6)
+        try:
+            short_wait.until(EC.number_of_windows_to_be(2))
+            for handle in self.driver.window_handles:
+                if handle != original_window:
+                    self.driver.switch_to.window(handle)
+                    break
+            print("Switched to Google OAuth window.")
+        except TimeoutException:
+            pass  # same-tab redirect — already on Google page
+
+        time.sleep(2)
+
+        # Select the correct Google account from the picker
+        account_xpath = config.GOOGLE_XPATH_ACCOUNT.replace("{email}", google_email)
+        try:
+            account = short_wait.until(
+                EC.element_to_be_clickable((By.XPATH, account_xpath))
+            )
+            self._js_click(account)
+            print(f"Selected Google account: {google_email}")
+            time.sleep(2)
+        except TimeoutException:
+            print("Account picker not shown — may already be pre-selected.")
+
+        # Handle "Continue" confirmation page if shown
+        try:
+            continue_btn = short_wait.until(
+                EC.element_to_be_clickable((By.XPATH, config.GOOGLE_XPATH_CONTINUE))
+            )
+            self._js_click(continue_btn)
+            print("Confirmed Google account.")
+            time.sleep(2)
+        except TimeoutException:
+            pass
+
+        # If Google opened a popup, switch back to the main X window
+        if self.driver.current_window_handle != original_window:
+            self.driver.switch_to.window(original_window)
+
+        time.sleep(3)
+        print("Google login submitted.")
+
     def tweet_at_provider(self, text: str) -> bool:
         """
         Post a tweet with the given text.
