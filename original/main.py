@@ -129,7 +129,7 @@ class InternetSpeedTester:
         try:
             WebDriverWait(self.driver, 180).until(
                 EC.visibility_of_element_located(
-                    (By.XPATH, "//span[contains(text(), 'Results')]")
+                    (By.ID, "resultsSection")
                 )
             )
             print("Results section is visible. Waiting 6 seconds for table to render...")

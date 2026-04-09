@@ -102,13 +102,11 @@ class InternetSpeedTwitterBot:
         except TimeoutException as exc:
             raise RuntimeError("BEGIN button not found — M-Lab layout may have changed.") from exc
 
-        # Wait for results section
+        # Wait for resultsSection div to become visible (display: block)
         print(f"Waiting up to {config.WAIT_TIMEOUT_SPEED}s for results...")
         try:
             WebDriverWait(self.driver, config.WAIT_TIMEOUT_SPEED).until(
-                EC.visibility_of_element_located(
-                    (By.XPATH, config.MLAB_XPATH_RESULTS)
-                )
+                EC.visibility_of_element_located((By.ID, "resultsSection"))
             )
             print(f"Results visible. Settling for {config.SPEED_TEST_SETTLE}s...")
             time.sleep(config.SPEED_TEST_SETTLE)

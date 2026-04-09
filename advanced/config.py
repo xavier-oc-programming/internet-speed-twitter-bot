@@ -27,8 +27,8 @@ POST_CONFIRM_DELAY = 2   # seconds to wait after clicking Post
 MLAB_CONSENT_ID = "privacyConsent"  # updated from "demo-human" — inspect DevTools if this breaks again
 # CSS selector for the Begin button
 MLAB_CSS_START = "a.startButton"
-# XPath that signals the results section has loaded
-MLAB_XPATH_RESULTS = "//span[contains(text(), 'Results')]"
+# ID of the results div — becomes visible (display: block) when test completes
+MLAB_RESULTS_SECTION_ID = "resultsSection"
 
 # ── XPaths — M-Lab speed extraction ──────────────────────────────────────────
 MLAB_XPATH_DOWNLOAD = (
