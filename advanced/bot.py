@@ -140,6 +140,62 @@ class InternetSpeedTwitterBot:
         except TimeoutException:
             return False
 
+    def login(self, username: str, password: str) -> None:
+        """
+        Automate Twitter/X login.
+        Session is saved in the persistent Chrome profile — only runs when not already logged in.
+        Falls back gracefully if blocked by CAPTCHA or 2FA (handled in main.py).
+        """
+        print("Navigating to Twitter/X login...")
+        self.driver.get(config.TWITTER_LOGIN_URL)
+        time.sleep(2)
+
+        # Step 1 — enter username or email
+        username_input = self.wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, config.TWITTER_XPATH_USERNAME_INPUT)
+            )
+        )
+        username_input.send_keys(username)
+        time.sleep(0.5)
+        next_btn = self.wait.until(
+            EC.element_to_be_clickable((By.XPATH, config.TWITTER_XPATH_NEXT_BTN))
+        )
+        self._js_click(next_btn)
+        time.sleep(1.5)
+
+        # Step 2 — optional: X asks to confirm username when email was entered
+        short_wait = WebDriverWait(self.driver, 5)
+        try:
+            confirm = short_wait.until(
+                EC.presence_of_element_located(
+                    (By.XPATH, config.TWITTER_XPATH_USERNAME_CONFIRM)
+                )
+            )
+            confirm.send_keys(username)
+            next_btn2 = self.wait.until(
+                EC.element_to_be_clickable((By.XPATH, config.TWITTER_XPATH_NEXT_BTN))
+            )
+            self._js_click(next_btn2)
+            time.sleep(1.5)
+        except TimeoutException:
+            pass  # no confirmation step needed
+
+        # Step 3 — enter password
+        password_input = self.wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, config.TWITTER_XPATH_PASSWORD_INPUT)
+            )
+        )
+        password_input.send_keys(password)
+        time.sleep(0.5)
+        login_btn = self.wait.until(
+            EC.element_to_be_clickable((By.XPATH, config.TWITTER_XPATH_LOGIN_BTN))
+        )
+        self._js_click(login_btn)
+        time.sleep(3)
+        print("Login submitted.")
+
     def tweet_at_provider(self, text: str) -> bool:
         """
         Post a tweet with the given text.

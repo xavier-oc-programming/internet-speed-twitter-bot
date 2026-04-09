@@ -1,6 +1,7 @@
 # ── URLs ──────────────────────────────────────────────────────────────────────
 M_LAB_URL = "https://speed.measurementlab.net/#/"
 TWITTER_HOME = "https://x.com/home"
+TWITTER_LOGIN_URL = "https://x.com/i/flow/login"
 
 # ── Selenium ──────────────────────────────────────────────────────────────────
 # Match your installed Chrome major version.
@@ -14,8 +15,8 @@ WAIT_TIMEOUT_SPEED = 180  # seconds — M-Lab test can take up to 3 minutes
 CHROME_PROFILE_DIR = "advanced/chrome_profile"  # relative to project root
 
 # ── Thresholds / ISP contract ─────────────────────────────────────────────────
-PROMISED_DOWN = 150   # Mbps — your ISP's promised download speed
-PROMISED_UP = 10      # Mbps — your ISP's promised upload speed
+PROMISED_DOWN = 10000   # TESTING ONLY — set back to 150 after Twitter test
+PROMISED_UP = 10000     # TESTING ONLY — set back to 10 after Twitter test
 
 # ── Timing ────────────────────────────────────────────────────────────────────
 SPEED_TEST_SETTLE = 6    # seconds to wait after results appear for table to render
@@ -38,8 +39,19 @@ MLAB_XPATH_UPLOAD = (
     '//*[@id="measurementSpace"]/div[2]/table/tbody/tr[4]/td[3]/strong'
 )
 
-# ── XPaths — Twitter / X login check ─────────────────────────────────────────
+# ── XPaths — Twitter / X login flow ──────────────────────────────────────────
 TWITTER_XPATH_CHECK_LOGIN = "//a[@href='/home' or @href='/i/flow/home']"
+
+# Username / email input on the login page
+TWITTER_XPATH_USERNAME_INPUT = "//input[@name='text']"
+# "Next" button (appears after username entry)
+TWITTER_XPATH_NEXT_BTN = "//span[normalize-space()='Next']"
+# Optional: X asks for username confirmation when email was entered
+TWITTER_XPATH_USERNAME_CONFIRM = "//input[@data-testid='ocfEnterTextTextInput']"
+# Password input
+TWITTER_XPATH_PASSWORD_INPUT = "//input[@name='password']"
+# Final "Log in" button
+TWITTER_XPATH_LOGIN_BTN = "//div[@data-testid='LoginForm_Login_Button']"
 
 # ── XPaths — Twitter / X tweet composition ───────────────────────────────────
 # The contenteditable div where tweet text is typed

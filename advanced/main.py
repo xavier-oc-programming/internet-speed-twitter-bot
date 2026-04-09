@@ -1,3 +1,4 @@
+import os
 import sys
 from pathlib import Path
 
@@ -43,12 +44,23 @@ def main():
 
         # ── Step 3: check Twitter login ────────────────────────────────────────
         if not bot.is_logged_in_to_twitter():
-            print("\nNot logged in to Twitter/X.")
-            print("Log in manually in the Chrome window, then press Enter here.")
-            input("Press Enter when logged in: ")
+            twitter_user = os.getenv("TWITTER_USERNAME", "")
+            twitter_pass = os.getenv("TWITTER_PASSWORD", "")
+
+            if twitter_user and twitter_pass:
+                print("\nNot logged in — attempting automated login...")
+                try:
+                    bot.login(twitter_user, twitter_pass)
+                except Exception as exc:
+                    print(f"Automated login failed: {exc}")
+
             if not bot.is_logged_in_to_twitter():
-                print("Login still not detected. Exiting without tweeting.")
-                return
+                print("\nNot logged in to Twitter/X (automated login failed or no credentials).")
+                print("Log in manually in the Chrome window, then press Enter here.")
+                input("Press Enter when logged in: ")
+                if not bot.is_logged_in_to_twitter():
+                    print("Login still not detected. Exiting without tweeting.")
+                    return
 
         # ── Step 4: post tweet ─────────────────────────────────────────────────
         success = bot.tweet_at_provider(complaint)
