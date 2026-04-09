@@ -6,7 +6,7 @@ When your ISP promises 150 Mb/s download and 10 Mb/s upload, this bot opens M-La
 
 This project ships in two builds. The **original build** follows the course approach: it kills all Chrome processes, launches a fresh Chrome instance with remote debugging enabled, attaches Selenium to that debugger session, and posts the tweet through your already-logged-in browser profile. The **advanced build** refactors the logic into clean, separated modules using `undetected-chromedriver` with a persistent profile, centralises all selectors and constants in `config.py`, and guards every browser interaction with proper JS-click fallbacks and short timeouts.
 
-No external API keys are required. Both builds use browser automation against the public M-Lab speed-test page and Twitter's web UI. The advanced build automates Twitter login via Google OAuth — on the very first run you complete the Google account picker manually in the opened Chrome window; every subsequent run reuses the saved session from the persistent profile and skips login entirely.
+No external API keys are required. Both builds use browser automation against the public M-Lab speed-test page and Twitter's web UI. The first time you run the advanced build, log in to Twitter manually in the Chrome window that opens. Chrome saves the session to a persistent profile — every run after that is fully automatic with no login step.
 
 ---
 
@@ -35,7 +35,7 @@ No external API keys are required. Both builds use browser automation against th
 |---|---|
 | Python 3.10+ | Required for modern type hints |
 | Google Chrome | Advanced build auto-manages ChromeDriver via UC |
-| Twitter / X account linked to Google | Advanced build uses Google OAuth — complete account picker once manually |
+| Twitter / X account | Log in manually the first time; session saved automatically after that |
 | Internet connection | Bot measures your real connection speed |
 
 No Twitter API keys needed — the bot interacts with the Twitter web UI directly.
@@ -56,7 +56,7 @@ pip install -r requirements.txt
 python menu.py
 ```
 
-On first run, Chrome opens the X login page and clicks "Sign in with Google" automatically. A Google account picker appears — select your account once manually. The session is saved to `advanced/chrome_profile/` and every subsequent run skips login entirely.
+On first run, Chrome opens — log in to Twitter/X manually (use "Sign in with Google" or any method). The session is saved to `advanced/chrome_profile/`. Every run after that is fully automatic — no login needed.
 
 Update `CHROME_VERSION` in `advanced/config.py` to match your installed Chrome major version if UC raises a version mismatch error.
 
@@ -72,7 +72,7 @@ Update `CHROME_VERSION` in `advanced/config.py` to match your installed Chrome m
 | XPaths | Inline | Grouped in `config.py` by page area |
 | JS click fallback | Partial | All non-trivial clicks |
 | Error handling | `try/except` with prints | Raises `RuntimeError`; orchestrator catches |
-| Twitter login | Manual via debugger session | Google OAuth automated; manual account picker on first run only |
+| Twitter login | Manual via debugger session | Manual on first run; fully automatic after (persistent profile) |
 | Threshold check | Always tweets | Only tweets if speeds are below promised |
 
 ---
@@ -260,7 +260,7 @@ TWITTER_USERNAME=your_twitter_username
 TWITTER_PASSWORD=your_twitter_password
 ```
 
-The `.env` file is gitignored and never committed. `GOOGLE_EMAIL` is all that is needed for normal use — the bot clicks "Sign in with Google", opens the account picker, and you select your account once. After that the session lives in `advanced/chrome_profile/` and login is fully automatic.
+The `.env` file is gitignored and never committed. These variables are only used if the bot detects you are not logged in. On first run, log in manually in the Chrome window regardless — after that the session is saved and `.env` credentials are not needed again.
 
 ---
 
@@ -275,8 +275,8 @@ UC needs the exact major version to download the correct driver patch. Update th
 **`--disable-notifications` over `add_experimental_option("prefs", ...)`**
 UC does not support `add_experimental_option` and silently crashes Chrome when it is used. Notification suppression is done via `options.add_argument("--disable-notifications")` instead.
 
-**Google OAuth login — manual only on first run**
-Twitter/X blocks fully automated login flows. Instead, the bot navigates to the X login page, clicks "Sign in with Google" automatically, and opens the Google account picker. The user selects their account once manually. Chrome saves the authenticated session to the persistent profile directory (`advanced/chrome_profile/`). Every subsequent run detects the existing session via `is_logged_in_to_twitter()` and skips the login step entirely.
+**First login is manual; all subsequent runs are automatic**
+Twitter/X blocks fully automated login. On the first run, Chrome opens and the user logs in manually (via "Sign in with Google" or username/password). Chrome saves the authenticated session to `advanced/chrome_profile/`. Every subsequent run calls `is_logged_in_to_twitter()` first — if the session is still valid, the login step is skipped entirely and the bot goes straight to the speed test.
 
 **JS click with normal click fallback**
 Overlapping elements, animations, and edge-of-viewport positions all cause `ElementClickInterceptedException`. Every non-trivial click uses `_js_click()` which tries normal click first and falls back to `driver.execute_script("arguments[0].click();", el)`.
