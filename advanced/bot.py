@@ -45,9 +45,7 @@ class InternetSpeedTwitterBot:
     def _create_driver(self, profile_dir: Path) -> uc.Chrome:
         """Launch Chrome with persistent profile using undetected-chromedriver."""
         options = uc.ChromeOptions()
-        options.add_experimental_option("prefs", {
-            "profile.default_content_setting_values.notifications": 2,  # block
-        })
+        options.add_argument("--disable-notifications")
         options.add_argument(f"--user-data-dir={profile_dir}")
         return uc.Chrome(options=options, version_main=config.CHROME_VERSION)
 
