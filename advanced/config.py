@@ -15,8 +15,8 @@ WAIT_TIMEOUT_SPEED = 180  # seconds — M-Lab test can take up to 3 minutes
 CHROME_PROFILE_DIR = "advanced/chrome_profile"  # relative to project root
 
 # ── Thresholds / ISP contract ─────────────────────────────────────────────────
-PROMISED_DOWN = 10000   # TESTING ONLY — set back to 150 after Twitter test
-PROMISED_UP = 10000     # TESTING ONLY — set back to 10 after Twitter test
+PROMISED_DOWN = 150   # Mbps — your ISP's promised download speed
+PROMISED_UP = 10      # Mbps — your ISP's promised upload speed
 
 # ── Timing ────────────────────────────────────────────────────────────────────
 SPEED_TEST_SETTLE = 6    # seconds to wait after results appear for table to render
