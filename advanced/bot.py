@@ -69,17 +69,30 @@ class InternetSpeedTwitterBot:
         self.driver.get(config.M_LAB_URL)
         time.sleep(3)
 
-        # Accept data-sharing consent
+        # Accept data-sharing consent — try input click, then label click, then JS
+        print("Looking for consent checkbox...")
         try:
             consent = self.wait.until(
                 EC.presence_of_element_located((By.ID, config.MLAB_CONSENT_ID))
             )
-            self.driver.execute_script("arguments[0].click();", consent)
+            # Real .click() triggers React/Vue state; fall back to label click then JS
+            try:
+                consent.click()
+            except Exception:
+                try:
+                    label = self.driver.find_element(
+                        By.CSS_SELECTOR, f"label[for='{config.MLAB_CONSENT_ID}']"
+                    )
+                    label.click()
+                except Exception:
+                    self.driver.execute_script("arguments[0].click();", consent)
             print("Consent checkbox accepted.")
+            time.sleep(1)
         except TimeoutException:
             print("Consent checkbox not found — may already be accepted.")
 
         # Click BEGIN
+        print("Looking for BEGIN button...")
         try:
             begin = WebDriverWait(self.driver, 30).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, config.MLAB_CSS_START))

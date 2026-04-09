@@ -24,7 +24,7 @@ POST_CONFIRM_DELAY = 2   # seconds to wait after clicking Post
 
 # ── XPaths — M-Lab consent + start ───────────────────────────────────────────
 # ID of the checkbox that accepts data sharing policy
-MLAB_CONSENT_ID = "demo-human"
+MLAB_CONSENT_ID = "privacyConsent"  # updated from "demo-human" — inspect DevTools if this breaks again
 # CSS selector for the Begin button
 MLAB_CSS_START = "a.startButton"
 # XPath that signals the results section has loaded

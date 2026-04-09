@@ -107,7 +107,7 @@ class InternetSpeedTester:
         # Accept
         try:
             consent_input = WebDriverWait(self.driver, 20).until(
-                EC.presence_of_element_located((By.ID, "demo-human"))
+                EC.presence_of_element_located((By.ID, "privacyConsent"))
             )
             self.driver.execute_script("arguments[0].click();", consent_input)
             print("Consent checkbox clicked.")
