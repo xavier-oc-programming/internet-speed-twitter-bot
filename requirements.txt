@@ -1,0 +1,15 @@
+# Python 3.10+ recommended
+#
+# Advanced build
+undetected-chromedriver  # manages ChromeDriver automatically; update CHROME_VERSION in config.py when Chrome updates
+selenium>=4.25
+python-dotenv
+pyperclip
+
+# Original build
+# selenium>=4.25
+# pyperclip
+
+# Note: undetected-chromedriver (UC) manages ChromeDriver automatically.
+# No manual chromedriver download or Homebrew install is needed.
+# UC must be pinned to your installed Chrome major version via CHROME_VERSION in advanced/config.py.

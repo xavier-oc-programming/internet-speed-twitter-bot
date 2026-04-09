@@ -1,5 +1,5 @@
 """
-04_twitter_bot_to_complain.py — macOS
+original/main.py — Internet Speed Twitter Complaint Bot (Day 51)
 
 Flow:
 1. Kill all Chrome.
@@ -7,7 +7,7 @@ Flow:
 3. Attach with Selenium and run M-Lab speed test.
 4. Extract download / upload.
 5. Build complaint tweet from measured vs promised.
-6. Attach again (same debugger) with the Twitter logic from 06_twitter_only.py.
+6. Attach again (same debugger) with the Twitter logic.
 7. Paste complaint into Twitter home box and click Post.
 """
 
@@ -184,7 +184,7 @@ class InternetSpeedTester:
 
 
 # -------------------------------------------------
-# PART 2: TWITTER BOT (from 06_twitter_only.py, adapted)
+# PART 2: TWITTER BOT
 # -------------------------------------------------
 class TwitterAttachedBot:
     def __init__(self, debugger_address=DEBUGGER_ADDRESS, wait_sec=15):
@@ -272,7 +272,7 @@ if __name__ == "__main__":
     print("Complaint to post:")
     print(complaint)
 
-    # 3) post to twitter using your 06_twitter_only approach
+    # 3) post to twitter using remote debug approach
     twitter_bot = TwitterAttachedBot()
     if not twitter_bot.is_logged_in():
         print("Not logged in or home did not load.")
