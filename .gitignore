@@ -1,0 +1,17 @@
+**/__pycache__/
+.DS_Store
+.idea/
+.vscode/
+*.py[cod]
+.env
+*.log
+old_files/
+
+# Selenium persistent browser profiles (local only)
+chrome_profile/
+chrome_profile_twitter/
+~/selenium_debug_profile/
+
+# Generated output
+advanced/output/
+advanced/data/
